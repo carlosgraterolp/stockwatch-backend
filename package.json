@@ -11,6 +11,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@polygon.io/client-js": "^7.3.2",
+    "axios": "^1.5.1",
+    "dotenv": "^16.3.1",
     "express": "^4.16.4",
     "validator": "^13.11.0"
   },
