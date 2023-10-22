@@ -13,30 +13,23 @@ router.get('/stocks', async (req, res) => {
                 params: {
                     type: 'CS',
                     market: 'stocks',
-                    limit: 1,
                 },
             }
         )
 
-        const completeTickers = data.results
-
-        let tickerHeaders = completeTickers.map((t) => {
+        let tickers = data.results.map((t) => {
             return {
                 ticker: t.ticker,
                 name: t.name,
                 market: t.market,
                 locale: t.locale,
-                primary_exchange: t.primary_exchange,
+                primaryExchange: t.primary_exchange,
             }
         })
 
-        tickers = tickerHeaders.map((t) => {
+        tickers.forEach((t) => {
             tickerString = t.ticker
-            todayString = utils.getTodayString()
-
-            // const { data } = await axios.get(`https://api.polygon.io/v1/open-close/${tickerString}/${todayString}`, {
-            //     headers: {'Authorization': `Bearer ${token}`}
-            // });
+            todayString = utils.getTodaysDate()
 
             // TODO: Remove dummy data
             let data = {
@@ -48,15 +41,11 @@ router.get('/stocks', async (req, res) => {
                 preMarket: data.preMarket,
                 open: data.open,
             }
-
-            return t
         })
-
-        console.log(tickers)
 
         res.status(200).send(tickers)
     } catch (e) {
-        console.error('Error in GET /stocks Endpoint: ', e)
+        console.error('Error in GET /stocks endpoint: ', e)
         res.status(500).send()
     }
 })

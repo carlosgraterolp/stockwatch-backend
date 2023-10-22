@@ -1,6 +1,6 @@
 let utils = {}
 
-utils.getTodayString = () => {
+utils.getTodaysDate = () => {
     let ts = Date.now()
     let date_ob = new Date(ts)
 
