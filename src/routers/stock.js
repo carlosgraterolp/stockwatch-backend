@@ -48,7 +48,7 @@ router.get('/stocks', async (req, res) => {
                 open: priceFound.o,
                 current:
                     Math.round(
-                        open * (1 + utils.getRandomPriceChange()) * 100
+                        priceFound.o * (1 + utils.getRandomPriceChange()) * 100
                     ) / 100,
             }
         })
