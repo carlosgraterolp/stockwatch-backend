@@ -1,23 +1,22 @@
 const express = require('express')
 const axios = require('axios')
 const router = new express.Router()
-const token = process.env['API_TOKEN']
+const token = process.env.API_TOKEN
 const utils = require('../utils')
 
 router.get('/stocks', async (req, res) => {
     try {
-        const { data } = await axios.get(
-            'https://api.polygon.io/v3/reference/tickers',
-            {
-                headers: { Authorization: `Bearer ${token}` },
-                params: {
-                    type: 'CS',
-                    market: 'stocks',
-                },
-            }
-        )
+        const {
+            data: { results: headers },
+        } = await axios.get('https://api.polygon.io/v3/reference/tickers', {
+            headers: { Authorization: `Bearer ${token}` },
+            params: {
+                type: 'CS',
+                market: 'stocks',
+            },
+        })
 
-        let tickers = data.results.map((t) => {
+        let tickers = headers.map((t) => {
             return {
                 ticker: t.ticker,
                 name: t.name,
@@ -27,19 +26,30 @@ router.get('/stocks', async (req, res) => {
             }
         })
 
-        tickers.forEach((t) => {
-            tickerString = t.ticker
-            todayString = utils.getTodaysDate()
+        const {
+            data: { results: prices },
+        } = await axios.get(
+            `https://api.polygon.io/v2/aggs/grouped/locale/us/market/stocks/${utils.getLastTradingDay()}`,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
 
-            // TODO: Remove dummy data
-            let data = {
-                preMarket: 1,
-                open: 1,
+        tickers.forEach((t, index, object) => {
+            let priceFound = prices.find((price) => price.T == t.ticker)
+
+            // If price is not found, remove element and continue with the next one
+            if (priceFound == undefined) {
+                object.splice(index, 1)
+                return
             }
 
-            t.priceData = {
-                preMarket: data.preMarket,
-                open: data.open,
+            t.prices = {
+                open: priceFound.o,
+                current:
+                    Math.round(
+                        priceFound.o * (1 + utils.getRandomPriceChange()) * 100
+                    ) / 100,
             }
         })
 
