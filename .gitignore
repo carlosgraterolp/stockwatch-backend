@@ -1,3 +1,4 @@
 node_modules
 playground
+.DS_Store
 src/routers/task-sample.js
