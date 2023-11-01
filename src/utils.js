@@ -1,37 +1,19 @@
+const { DateTime } = require('luxon')
 let utils = {}
 
 utils.getLastTradingDay = () => {
-    let dateObject = new Date(Date.now())
-    let dayOfWeek = dateObject.getDay()
-    let dateString = ''
+    const now = DateTime.now()
+    let lastTradingDay = now.minus({ days: 1 }) // By default get yesterday's date
 
-    if (dayOfWeek == 0) {
-        // If today is Sunday, then get last Friday's date
-        dateString =
-            dateObject.getFullYear() +
-            '-' +
-            (dateObject.getMonth() + 1) +
-            '-' +
-            (dateObject.getDate() - 2)
-    } else if (dayOfWeek == 1) {
-        // If today is Monday, then get last Friday's date as well since Poligon's Basic Plan cannot provide today's data
-        dateString =
-            dateObject.getFullYear() +
-            '-' +
-            (dateObject.getMonth() + 1) +
-            '-' +
-            (dateObject.getDate() - 3)
-    } else {
-        // For any other day, then get yesterday's date to comply with the same limitation
-        dateString =
-            dateObject.getFullYear() +
-            '-' +
-            (dateObject.getMonth() + 1) +
-            '-' +
-            (dateObject.getDate() - 1)
+    if (lastTradingDay.weekday == 0) {
+        // If yesterday was Sunday, then get last Friday's date
+        lastTradingDay = lastTradingDay.minus({ days: 2 })
+    } else if (lastTradingDay.weekday == 6) {
+        // If yesterday was Saturday, then get last Friday's date as well
+        lastTradingDay = lastTradingDay.minus({ days: 1 })
     }
 
-    return dateString
+    return lastTradingDay.toFormat('yyyy-LL-dd')
 }
 
 utils.getRandomPriceChange = () => {
