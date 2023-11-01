@@ -15,7 +15,7 @@ utils.getLastTradingDay = () => {
         lastTradingDay = lastTradingDay.minus({ days: 1 })
     }
 
-    console.log('Todays Date', DateTime.now().toISO())
+    console.log('Todays Date: ', now.toISO())
     console.log(
         'Last Trading Date Obtained: ',
         lastTradingDay.toFormat('yyyy-LL-dd')
