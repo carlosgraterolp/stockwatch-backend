@@ -2,8 +2,7 @@ const { DateTime } = require('luxon')
 let utils = {}
 
 utils.getLastTradingDay = () => {
-    const now = DateTime.now()
-    let lastTradingDay = now.minus({ days: 1 }) // By default get yesterday's date
+    let lastTradingDay = DateTime.now().minus({ days: 1 }) // By default get yesterday's date
 
     if (lastTradingDay.weekday == 0) {
         // If yesterday was Sunday, then get last Friday's date
